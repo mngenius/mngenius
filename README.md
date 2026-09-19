@@ -54,7 +54,7 @@ systems.
 - **iceberg_maintainer_tool / iceberg_cleaner** — maintenance and cleanup
   tooling for Apache Iceberg tables
 - **spark-pipeline-builder** — a builder framework for Spark pipelines
-- **parquet_viewver** — Parquet file inspection and viewer utility
+- **parquet_viewer** — Parquet file inspection and viewer utility
 - **silver_diff_report / comparator** — dataset diffing and reconciliation
   reports for the silver layer
 - **glue-retry-api** — retry API around AWS Glue jobs
