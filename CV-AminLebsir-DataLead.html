@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amin Lebsir — Data Lead</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 12mm;
+    }
+
+    :root {
+      --ink: #14213d;
+      --muted: #4b5563;
+      --line: #d7dee8;
+      --accent: #0f766e;
+      --accent-2: #2563eb;
+      --bg: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #111827;
+      background: white;
+      line-height: 1.4;
+      font-size: 11.2pt;
+    }
+
+    .page {
+      width: 100%;
+      min-height: calc(297mm - 24mm);
+      page-break-after: always;
+    }
+
+    .page:last-child {
+      page-break-after: auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      border-bottom: 3px solid var(--ink);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      margin: 0 0 4px;
+      font-size: 25pt;
+      color: var(--ink);
+    }
+
+    .headline {
+      font-size: 13pt;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 6px;
+    }
+
+    .contact {
+      text-align: right;
+      font-size: 10pt;
+      color: var(--muted);
+      min-width: 180px;
+    }
+
+    .contact div {
+      margin-bottom: 4px;
+    }
+
+    .summary {
+      font-size: 11.2pt;
+      margin-bottom: 14px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.05fr 1.8fr;
+      gap: 18px;
+    }
+
+    .panel {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+    }
+
+    .section {
+      margin-bottom: 14px;
+    }
+
+    h2 {
+      margin: 0 0 8px;
+      font-size: 12pt;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+    }
+
+    h3 {
+      margin: 0 0 2px;
+      font-size: 11.5pt;
+      color: var(--ink);
+    }
+
+    .role-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: baseline;
+      margin-bottom: 2px;
+    }
+
+    .company {
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .dates {
+      color: var(--muted);
+      font-size: 10pt;
+      white-space: nowrap;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 10.2pt;
+      margin-bottom: 6px;
+    }
+
+    ul {
+      margin: 6px 0 0 18px;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    .skills-group {
+      margin-bottom: 10px;
+    }
+
+    .skills-group strong {
+      color: var(--ink);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .pill {
+      border: 1px solid #bcd0f7;
+      color: var(--ink);
+      background: white;
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 9.5pt;
+    }
+
+    .impact {
+      border-left: 3px solid var(--accent);
+      padding-left: 10px;
+      margin-bottom: 12px;
+    }
+
+    .impact p {
+      margin: 4px 0 0;
+    }
+
+    .two-col {
+      columns: 2;
+      column-gap: 18px;
+    }
+
+    .small {
+      font-size: 10pt;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <section class="page">
+    <header class="header">
+      <div>
+        <h1>Amin Lebsir</h1>
+        <p class="headline">Data Lead · Cloud Data Lead · Data Platform Architect</p>
+        <p class="summary">
+          Data engineering and platform leader with <strong>17 years of overall experience</strong>,
+          including <strong>11 years in capital markets</strong>. I design and deliver lakehouse,
+          event-driven and cloud platform systems that turn risk and business data into governed,
+          production-grade products with strong release discipline and low operational overhead.
+        </p>
+      </div>
+      <div class="contact">
+        <div>GitHub: github.com/mngenius</div>
+        <div>Focus: AWS · Azure · Spark · Java · Python</div>
+        <div>Languages: French · English · Spanish</div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside>
+        <div class="panel">
+          <div class="section">
+            <h2>Core strengths</h2>
+            <div class="skills-group">
+              <strong>Data & lakehouse</strong>
+              <div class="pill-list">
+                <span class="pill">Apache Spark</span>
+                <span class="pill">Iceberg</span>
+                <span class="pill">Parquet</span>
+                <span class="pill">Athena</span>
+                <span class="pill">Glue</span>
+                <span class="pill">Databricks</span>
+                <span class="pill">Delta Lake</span>
+                <span class="pill">SQL</span>
+              </div>
+            </div>
+            <div class="skills-group">
+              <strong>Cloud & platform</strong>
+              <div class="pill-list">
+                <span class="pill">AWS</span>
+                <span class="pill">Azure</span>
+                <span class="pill">Kubernetes</span>
+                <span class="pill">AKS</span>
+                <span class="pill">Docker</span>
+                <span class="pill">Terraform</span>
+                <span class="pill">GitHub Actions</span>
+              </div>
+            </div>
+            <div class="skills-group">
+              <strong>Backend & delivery</strong>
+              <div class="pill-list">
+                <span class="pill">Java</span>
+                <span class="pill">Spring Boot</span>
+                <span class="pill">Python</span>
+                <span class="pill">Scala</span>
+                <span class="pill">Kafka</span>
+                <span class="pill">Event Hubs</span>
+                <span class="pill">PostgreSQL</span>
+                <span class="pill">CI/CD</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h2>Credentials</h2>
+            <p><strong>Azure Databricks Fundamentals</strong><br /><span class="small">Certified in 2025</span></p>
+            <p><strong>Master 2 in Computer Science</strong><br /><span class="small">Université d'Évry · 2008–2009</span></p>
+          </div>
+
+          <div class="section">
+            <h2>What I build</h2>
+            <ul>
+              <li>Lakehouse data platforms on AWS and Azure</li>
+              <li>Event-driven risk and analytics pipelines</li>
+              <li>No-code / low-code data products for business users</li>
+              <li>Reusable CI/CD and passwordless cloud delivery</li>
+              <li>Cost-aware infrastructure and scale-to-zero operations</li>
+            </ul>
+          </div>
+        </div>
+      </aside>
+
+      <main>
+        <div class="section">
+          <h2>Selected impact</h2>
+          <div class="impact">
+            <h3>No-code risk pipeline platform with safe promotion rails</h3>
+            <p>
+              Designed a JSON-driven pipeline model that lets analysts and business teams define
+              processing logic while the platform compiles it into Spark and Spark SQL execution.
+              Wrapped it in a controlled lifecycle with draft, validated and live states, immutable
+              versions, automated validation gates and approval-based promotion to production.
+            </p>
+          </div>
+          <div class="impact">
+            <h3>Governed business screens over raw S3 and risk data</h3>
+            <p>
+              Built the path from catalogued raw data to business-facing screens: automatic data
+              catalog indexing, admin-configured views, drill-down and drill-through navigation,
+              per-scenario analysis, and correct re-aggregation logic for additive and non-additive
+              measures such as VaR.
+            </p>
+          </div>
+          <div class="impact">
+            <h3>Cross-cloud event-driven migration of production risk workloads</h3>
+            <p>
+              Replaced file-watching integrations with AWS event-driven components using S3,
+              Lambda, Glue and EventBridge, while bridging AWS and Azure workloads and preserving
+              traceability, monitoring and delivery control across the migration path.
+            </p>
+          </div>
+          <div class="impact">
+            <h3>Lakehouse patterns that transfer cleanly to Databricks</h3>
+            <p>
+              Applied Spark, Iceberg, Athena and governance patterns that map directly to Delta
+              Lake, Unity Catalog, Databricks SQL and Delta Live Tables, with particular depth in
+              data correctness, release discipline and performance-aware risk aggregation.
+            </p>
+          </div>
+          <div class="impact">
+            <h3>Platform engineering that keeps delivery boring</h3>
+            <p>
+              Built reusable CI/CD assets, Kubernetes-based runtime foundations, passwordless cloud
+              authentication patterns, and cost-control automation aimed at making data and platform
+              systems reproducible, secure and inexpensive when idle.
+            </p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Recent experience</h2>
+          <div class="role-line">
+            <div>
+              <h3>Data Lead / Cloud Data Lead</h3>
+              <div class="company">Engie Global Markets</div>
+            </div>
+            <div class="dates">Sep 2026 – Present</div>
+          </div>
+          <div class="subtitle">Capital markets risk platform migration to AWS</div>
+          <ul>
+            <li>Led migration of legacy production risk indicators from OLAP and CSV-based flows to an AWS-native data platform.</li>
+            <li>Designed S3, Lambda, Glue and EventBridge patterns for event-driven ingestion, processing and monitoring.</li>
+            <li>Built a no-code platform that serialises business designs to JSON and executes them on Spark and Spark SQL.</li>
+            <li>Implemented cross-cloud communication between AWS and Azure components and improved end-to-end tracking.</li>
+          </ul>
+
+          <div class="role-line" style="margin-top: 12px;">
+            <div>
+              <h3>Lead Developer / Data Platform Lead</h3>
+              <div class="company">Société Générale Corporate &amp; Investment Banking</div>
+            </div>
+            <div class="dates">Oct 2022 – Mar 2026</div>
+          </div>
+          <div class="subtitle">Fraud-control and analytics pipeline platform</div>
+          <ul>
+            <li>Built a Spark-based ETL and execution framework for anti-fraud control designs and operational analytics.</li>
+            <li>Developed an interpretation engine converting JSON directives into executable Spark logic.</li>
+            <li>Implemented job execution, monitoring and update services around Spark workloads.</li>
+            <li>Owned orchestration, cloud infrastructure, health monitoring and complex Spark SQL control scenarios.</li>
+          </ul>
+        </div>
+      </main>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="section">
+      <h2>Professional experience</h2>
+
+      <div class="role-line">
+        <div>
+          <h3>Consultant, Java / Big Data</h3>
+          <div class="company">Natixis Corporate &amp; Investment Banking</div>
+        </div>
+        <div class="dates">Oct 2021 – Oct 2022</div>
+      </div>
+      <ul>
+        <li>Contributed to counterparty risk architecture modernisation with microservices and CI/CD standards.</li>
+        <li>Implemented distributed cache and publisher-consumer patterns to improve risk-calculation performance.</li>
+        <li>Built shared Jenkins pipeline libraries to standardise delivery workflows across teams.</li>
+      </ul>
+
+      <div class="role-line" style="margin-top: 10px;">
+        <div>
+          <h3>Senior Java / Big Data Developer</h3>
+          <div class="company">Société Générale Corporate &amp; Investment Banking</div>
+        </div>
+        <div class="dates">Jun 2018 – Oct 2021</div>
+      </div>
+      <ul>
+        <li>Delivered big-data execution frameworks for FRTB default-risk metrics on Azure-based platforms.</li>
+        <li>Designed Kafka-driven messaging and result distribution toward downstream OLAP consumers.</li>
+        <li>Migrated data projects from on-premises data lake stacks to Azure and maintained production services.</li>
+      </ul>
+
+      <div class="role-line" style="margin-top: 10px;">
+        <div>
+          <h3>Consultant, Distributed Systems</h3>
+          <div class="company">HSBC Global Markets</div>
+        </div>
+        <div class="dates">Jan 2017 – May 2018</div>
+      </div>
+      <ul>
+        <li>Led development for fixed-income functionality within a cross-asset risk and PnL platform.</li>
+        <li>Coordinated offshore teams and built shared cache, workflow and REST service capabilities.</li>
+        <li>Supported CI/CD and performance optimisation across distributed compute grids.</li>
+      </ul>
+
+      <div class="role-line" style="margin-top: 10px;">
+        <div>
+          <h3>Java Core / SQL Developer</h3>
+          <div class="company">Société Générale Corporate &amp; Investment Banking</div>
+        </div>
+        <div class="dates">Apr 2014 – Jan 2017</div>
+      </div>
+      <ul>
+        <li>Built low-latency trade capture and position-management components for synthetic prime brokerage workflows.</li>
+        <li>Delivered re-rating and historical replay APIs, BDD test suites and high-touch production support.</li>
+      </ul>
+
+      <div class="role-line" style="margin-top: 10px;">
+        <div>
+          <h3>Java / JEE Developer</h3>
+          <div class="company">PMC Carrus Group</div>
+        </div>
+        <div class="dates">Jan 2012 – Apr 2014</div>
+      </div>
+      <ul>
+        <li>Developed alerting and integration services for real-time betting transaction systems.</li>
+        <li>Implemented messaging, server-push and database procedures, and coached junior developers.</li>
+      </ul>
+
+      <div class="role-line" style="margin-top: 10px;">
+        <div>
+          <h3>Java Consultant</h3>
+          <div class="company">VINCI / Cofiroute</div>
+        </div>
+        <div class="dates">Jul 2010 – Dec 2011</div>
+      </div>
+      <ul>
+        <li>Built file-conversion and supervision applications using Java, Spring Batch, XML and Oracle.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Key themes across the portfolio</h2>
+      <div class="two-col">
+        <ul>
+          <li>Risk data products with auditability and release control</li>
+          <li>Serverless and Spark-based data processing on AWS</li>
+          <li>Catalog, discovery and governed access to data assets</li>
+          <li>Interactive drill and aggregation paths for business users</li>
+          <li>Correct treatment of non-additive metrics such as VaR</li>
+          <li>Reusable developer platforms and CI/CD templates</li>
+          <li>Hybrid and cross-cloud operating models</li>
+          <li>Cost-aware runtime design and scale-to-zero instincts</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
