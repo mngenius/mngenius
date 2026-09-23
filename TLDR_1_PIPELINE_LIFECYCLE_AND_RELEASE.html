@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TL;DR #1 — Pipeline Lifecycle &amp; Release</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Kalam:wght@400;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.min.js"></script>
+<style>
+  :root {
+    --ink: #1e1e1e;
+    --blue: #1971c2;
+    --green: #2f9e44;
+    --red: #e03131;
+    --violet: #6741d9;
+    --orange: #e8590c;
+    --yellow: #f08c00;
+    --paper: #fdfdf7;
+    --line: #adb5bd;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Kalam', 'Comic Sans MS', cursive;
+    overflow: hidden;
+  }
+  /* faint dotted grid like an excalidraw canvas */
+  body {
+    background-image: radial-gradient(#00000010 1px, transparent 1px);
+    background-size: 26px 26px;
+  }
+  #deck { height: 100vh; width: 100vw; position: relative; }
+  .slide {
+    position: absolute; inset: 0;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 4vh 6vw 8vh;
+    opacity: 0;
+    transition: opacity .35s ease;
+  }
+  .slide.active { display: flex; opacity: 1; }
+  h1 {
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: clamp(2.4rem, 6vw, 5rem);
+    margin: 0 0 .2em;
+    color: var(--ink);
+    text-align: center;
+    line-height: 1.05;
+  }
+  h2 {
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: clamp(1.9rem, 4.4vw, 3.2rem);
+    margin: 0 0 .5em;
+    color: var(--blue);
+    text-align: center;
+  }
+  .sub {
+    font-size: clamp(1rem, 2.1vw, 1.5rem);
+    max-width: 60ch;
+    text-align: center;
+    color: #333;
+    line-height: 1.5;
+  }
+  .hl-blue { color: var(--blue); }
+  .hl-green { color: var(--green); }
+  .hl-red { color: var(--red); }
+  .hl-violet { color: var(--violet); }
+  .hl-orange { color: var(--orange); }
+  ul.hand {
+    list-style: none;
+    padding: 0; margin: .4em 0 0;
+    font-size: clamp(1rem, 2.2vw, 1.55rem);
+    max-width: 66ch;
+    line-height: 1.6;
+  }
+  ul.hand li { margin: .5em 0; padding-left: 1.8em; position: relative; }
+  ul.hand li::before {
+    content: "✦"; position: absolute; left: 0; top: 0;
+    color: var(--violet); font-size: 1.1em;
+  }
+  svg.diagram { width: min(94vw, 1180px); height: auto; max-height: 66vh; }
+  .cards { display: flex; gap: clamp(10px, 2vw, 26px); flex-wrap: wrap; justify-content: center; max-width: 1180px; }
+  .card {
+    position: relative;
+    padding: 1.1em 1.2em;
+    min-width: 210px; max-width: 260px;
+    font-size: clamp(.95rem, 1.6vw, 1.15rem);
+    line-height: 1.45;
+  }
+  .card h3 { font-family: 'Caveat', cursive; font-size: 1.6em; margin: 0 0 .25em; }
+  .card p { margin: 0; color: #333; }
+  /* table */
+  table.hand { border-collapse: collapse; font-size: clamp(.85rem, 1.7vw, 1.2rem); max-width: 1100px; width: 100%; }
+  table.hand th, table.hand td { padding: .55em .8em; text-align: left; vertical-align: top; }
+  table.hand th { font-family: 'Caveat', cursive; font-size: 1.4em; }
+  table.hand tbody tr td:first-child { font-weight: 700; font-family: 'Caveat', cursive; font-size: 1.35em; }
+
+  /* nav */
+  #nav {
+    position: fixed; bottom: 14px; right: 18px;
+    display: flex; align-items: center; gap: 10px;
+    z-index: 50; font-family: 'Kalam', cursive;
+  }
+  .nbtn {
+    cursor: pointer; user-select: none;
+    background: #fff; border: 2px solid var(--ink);
+    border-radius: 14px 10px 12px 10px;
+    padding: 4px 14px; font-size: 1.3rem; line-height: 1;
+    box-shadow: 2px 2px 0 #00000022;
+    font-family: 'Caveat', cursive;
+  }
+  .nbtn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 #00000022; }
+  #counter { font-size: 1rem; color: #555; min-width: 54px; text-align: center; }
+  #progress { position: fixed; top: 0; left: 0; height: 5px; background: var(--violet); width: 0; z-index: 60; transition: width .35s; }
+  .hint { position: fixed; bottom: 16px; left: 18px; font-size: .85rem; color: #999; z-index: 50; }
+  .badge {
+    display: inline-block; font-family: 'Caveat', cursive;
+    font-size: 1.15em; padding: .05em .5em; margin: 0 .1em;
+    border: 2px solid var(--ink); border-radius: 12px 8px 11px 7px;
+    background: #fff;
+  }
+  .tag-draft { color: var(--orange); border-color: var(--orange); }
+  .tag-valid { color: var(--blue); border-color: var(--blue); }
+  .tag-live { color: var(--green); border-color: var(--green); }
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div id="deck">
+
+  <!-- 1. TITLE -->
+  <section class="slide" data-diagram="title">
+    <h1>Pipeline Lifecycle<br/>&amp; How We Release to Production</h1>
+    <p class="sub" style="margin-top:.6em">
+      <b>TL;DR #1</b> — Themis doesn't just <i>answer</i> business questions,
+      it <b class="hl-violet">ships</b> them through a controlled, tested,
+      auditable path from a designer's screen to production —
+      with guardrails at every step.
+    </p>
+    <svg class="diagram" id="svg-title" viewBox="0 0 1000 150"></svg>
+  </section>
+
+  <!-- 2. LIFECYCLE PICTURE -->
+  <section class="slide" data-diagram="lifecycle">
+    <h2>1 · The lifecycle in one picture</h2>
+    <svg class="diagram" id="svg-lifecycle" viewBox="0 0 1120 340"></svg>
+    <p class="sub" style="margin-top:.3em">
+      Three persisted states —
+      <span class="badge tag-draft">draft</span>
+      <span class="badge tag-valid">validated</span>
+      <span class="badge tag-live">live</span>
+      — plus an ephemeral <b>Explore</b> mode that is never committed.
+    </p>
+  </section>
+
+  <!-- 3. STATES TABLE -->
+  <section class="slide" data-diagram="states">
+    <h2>The three persisted states</h2>
+    <svg class="diagram" id="svg-states" viewBox="0 0 1100 70" style="max-height:9vh"></svg>
+    <table class="hand">
+      <thead>
+        <tr><th>State</th><th>What it means</th><th>Who / what touches it</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="hl-orange">draft</td>
+          <td>Work-in-progress. Auto-saved. Cannot affect production.</td>
+          <td>Editors iterate freely</td>
+        </tr>
+        <tr>
+          <td class="hl-blue">validated</td>
+          <td>Frozen snapshot that passed full validation. Ready to publish.</td>
+          <td>Reviewer / promoter</td>
+        </tr>
+        <tr>
+          <td class="hl-green">live</td>
+          <td>The production version. Runs in AWS Glue, on schedule.</td>
+          <td>Only changes via an explicit <i>promote</i></td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="sub" style="margin-top:.8em">
+      <b>Key property —</b> production is <b class="hl-red">never edited in place</b>.
+      Opening a live pipeline branches a <b>new draft from live</b>; the live version
+      keeps running untouched until someone deliberately promotes a replacement.
+    </p>
+  </section>
+
+  <!-- 4. VERSIONING -->
+  <section class="slide" data-diagram="version">
+    <h2>2 · Versioning — nothing is silently overwritten</h2>
+    <ul class="hand">
+      <li><b>Draft saves overwrite the current draft</b> (minor bump) — no history pollution from keystroke-level versions.</li>
+      <li><b class="hl-blue">Promotion freezes the record</b> — it becomes an immutable, auditable artifact.</li>
+      <li><b class="hl-violet">Editing a promoted version</b> creates a new major version as a draft — the old live record is preserved intact.</li>
+      <li>Pipelines are <b>portable JSON documents</b> (diffable, versionable) — not opaque code.</li>
+      <li><b class="hl-red">No arbitrary code execution</b> — expressions are a whitelisted operation tree, never <code>eval()</code>.</li>
+    </ul>
+  </section>
+
+  <!-- 5. FOUR GATES -->
+  <section class="slide" data-diagram="gates">
+    <h2>3 · Four independent safety layers to prod</h2>
+    <svg class="diagram" id="svg-gates" viewBox="0 0 1140 300"></svg>
+    <p class="sub">
+      A change cannot reach a business user without passing <b>all four</b> gates.
+    </p>
+  </section>
+
+  <!-- 6. GATE DETAILS -->
+  <section class="slide" data-diagram="gatedetail">
+    <h2>What each gate actually enforces</h2>
+    <div class="cards" id="gate-cards">
+      <div class="card"><h3 class="hl-blue">1 · Validation</h3><p>Per promotion: schema, expressions, sources &amp; an <b>output-contract check</b>. Re-runs a live-data preview before publishing.</p></div>
+      <div class="card"><h3 class="hl-green">2 · Automated tests</h3><p>CI on every push &amp; PR. <b>150+ unit tests</b> on the compiler core, run against <b>SQLite &amp; DynamoDB</b>. A red build blocks the merge.</p></div>
+      <div class="card"><h3 class="hl-violet">3 · Promotion gate</h3><p>A distinct, permission-checked action — not a side effect of saving. Access controlled per pipeline on top of Okta.</p></div>
+      <div class="card"><h3 class="hl-orange">4 · Deploy gate</h3><p>Manual per-environment (uat → prod). <b>Prod needs reviewer approval</b>, deploys are componentised, and success is confirmed by polling the live build ID.</p></div>
+    </div>
+  </section>
+
+  <!-- 7. FEATURE COST -->
+  <section class="slide" data-diagram="feature">
+    <h2>4 · Adding a feature is additive</h2>
+    <p class="sub" style="margin-bottom:.4em">Worked example: <b>"365-day history"</b>. We extend the JSON DSL &amp; compiler — we don't rewrite the product.</p>
+    <svg class="diagram" id="svg-feature" viewBox="0 0 1120 250"></svg>
+  </section>
+
+  <!-- 8. SUMMARY -->
+  <section class="slide" data-diagram="summary">
+    <h1 style="color:var(--violet)">One-slide summary</h1>
+    <ul class="hand" style="max-width:74ch">
+      <li><b>Draft → Validated → Live</b>, with production never edited in place.</li>
+      <li><b class="hl-blue">Immutable, diffable versions</b> — full audit trail, no silent overwrites.</li>
+      <li><b class="hl-green">Four gates to prod:</b> in-product validation, automated CI tests, a permissioned promotion, and an approval-gated, build-verified deploy.</li>
+      <li><b class="hl-orange">New features are additive</b> — they ride the same rails.</li>
+      <li><b class="hl-violet">Net:</b> the release process is a <i>feature, not overhead</i> — it keeps a fast-moving analytics tool safe for production risk numbers.</li>
+    </ul>
+  </section>
+
+</div>
+
+<div id="progress"></div>
+<div id="nav">
+  <span class="nbtn" id="prev">‹ prev</span>
+  <span id="counter">1 / 8</span>
+  <span class="nbtn" id="next">next ›</span>
+</div>
+<div class="hint">← → / Space to navigate · F for fullscreen</div>
+
+<script>
+/* ---------- rough.js helpers ---------- */
+const SVGNS = "http://www.w3.org/2000/svg";
+function rc(svg) { return rough.svg(svg); }
+
+function addText(svg, x, y, str, opts = {}) {
+  const t = document.createElementNS(SVGNS, "text");
+  t.setAttribute("x", x); t.setAttribute("y", y);
+  t.setAttribute("text-anchor", opts.anchor || "middle");
+  t.setAttribute("dominant-baseline", opts.baseline || "middle");
+  t.setAttribute("font-family", opts.font || "'Caveat', cursive");
+  t.setAttribute("font-size", opts.size || 26);
+  t.setAttribute("font-weight", opts.weight || 700);
+  t.setAttribute("fill", opts.fill || "#1e1e1e");
+  t.textContent = str;
+  svg.appendChild(t);
+  return t;
+}
+
+function box(r, svg, x, y, w, h, opts = {}) {
+  const node = r.rectangle(x, y, w, h, {
+    stroke: opts.stroke || "#1e1e1e",
+    strokeWidth: opts.strokeWidth || 2.2,
+    roughness: opts.roughness ?? 1.6,
+    fill: opts.fill || undefined,
+    fillStyle: opts.fillStyle || "hachure",
+    fillWeight: opts.fillWeight || 1.5,
+    hachureGap: opts.hachureGap || 7,
+    bowing: 1.4,
+    seed: opts.seed || 1
+  });
+  svg.appendChild(node);
+}
+
+function arrow(r, svg, x1, y1, x2, y2, opts = {}) {
+  const stroke = opts.stroke || "#495057";
+  const sw = opts.strokeWidth || 2.4;
+  svg.appendChild(r.line(x1, y1, x2, y2, { stroke, strokeWidth: sw, roughness: 1.5, seed: opts.seed || 2 }));
+  // arrowhead
+  const ang = Math.atan2(y2 - y1, x2 - x1);
+  const L = opts.head || 13;
+  const a1 = ang + Math.PI - 0.42, a2 = ang + Math.PI + 0.42;
+  svg.appendChild(r.line(x2, y2, x2 + L * Math.cos(a1), y2 + L * Math.sin(a1), { stroke, strokeWidth: sw, roughness: 1.2, seed: 3 }));
+  svg.appendChild(r.line(x2, y2, x2 + L * Math.cos(a2), y2 + L * Math.sin(a2), { stroke, strokeWidth: sw, roughness: 1.2, seed: 4 }));
+}
+
+/* ---------- per-slide diagrams ---------- */
+const drawers = {
+  title(svg) {
+    const r = rc(svg);
+    const stages = [
+      { t: "designer", c: "#6741d9" },
+      { t: "controlled path", c: "#1971c2" },
+      { t: "production", c: "#2f9e44" }
+    ];
+    let x = 120;
+    stages.forEach((s, i) => {
+      box(r, svg, x, 40, 200, 66, { stroke: s.c, fill: s.c + "18", fillStyle: "solid", seed: i + 5 });
+      addText(svg, x + 100, 73, s.t, { fill: s.c, size: 28 });
+      if (i < stages.length - 1) arrow(r, svg, x + 205, 73, x + 305, 73, { seed: i + 9 });
+      x += 340;
+    });
+  },
+
+  lifecycle(svg) {
+    const r = rc(svg);
+    const stages = [
+      { t: "EXPLORE", sub: "ad-hoc query", note: "nothing saved", c: "#868e96" },
+      { t: "DESIGN", sub: "build pipeline", note: "auto-saved draft", c: "#e8590c" },
+      { t: "VALIDATED", sub: "frozen & checked", note: "ready to publish", c: "#1971c2" },
+      { t: "LIVE", sub: "in production", note: "runs on schedule", c: "#2f9e44" }
+    ];
+    const w = 232, h = 118, gap = 30, y = 60;
+    let x = 20;
+    const centers = [];
+    stages.forEach((s, i) => {
+      box(r, svg, x, y, w, h, { stroke: s.c, fill: s.c + "14", fillStyle: "solid", seed: i + 11 });
+      addText(svg, x + w / 2, y + 34, s.t, { fill: s.c, size: 34 });
+      addText(svg, x + w / 2, y + 68, s.sub, { size: 22, fill: "#333", weight: 400 });
+      addText(svg, x + w / 2, y + 96, "(" + s.note + ")", { size: 18, fill: "#888", weight: 400, font: "'Kalam', cursive" });
+      centers.push(x + w / 2);
+      if (i < stages.length - 1) arrow(r, svg, x + w + 2, y + h / 2, x + w + gap - 4, y + h / 2, { seed: i + 20 });
+      x += w + gap;
+    });
+    // round-trip arc under the row
+    const yb = y + h + 60;
+    svg.appendChild(r.line(centers[3], y + h, centers[3], yb, { stroke: "#6741d9", strokeWidth: 2, roughness: 1.3, seed: 40 }));
+    svg.appendChild(r.line(centers[0], yb, centers[3], yb, { stroke: "#6741d9", strokeWidth: 2, roughness: 1.3, seed: 41 }));
+    arrow(r, svg, centers[0], yb, centers[0], y + h + 2, { stroke: "#6741d9", seed: 42 });
+    addText(svg, (centers[0] + centers[3]) / 2, yb + 22, "round-trip always allowed", { fill: "#6741d9", size: 24 });
+  },
+
+  states(svg) {
+    const r = rc(svg);
+    const items = [
+      { t: "draft", c: "#e8590c" },
+      { t: "validated", c: "#1971c2" },
+      { t: "live", c: "#2f9e44" }
+    ];
+    let x = 210; const y = 12, w = 180, h = 44;
+    items.forEach((s, i) => {
+      box(r, svg, x, y, w, h, { stroke: s.c, fill: s.c + "16", fillStyle: "solid", seed: i + 30 });
+      addText(svg, x + w / 2, y + h / 2, s.t, { fill: s.c, size: 26 });
+      if (i < items.length - 1) arrow(r, svg, x + w + 2, y + h / 2, x + w + 70, y + h / 2, { seed: i + 33 });
+      x += w + 72;
+    });
+  },
+
+  gates(svg) {
+    const r = rc(svg);
+    const gates = [
+      { n: "1", t: "VALIDATION", sub: "per save / promote", c: "#1971c2" },
+      { n: "2", t: "AUTOMATED TESTS", sub: "every push / PR", c: "#2f9e44" },
+      { n: "3", t: "PROMOTION GATE", sub: "per publish", c: "#6741d9" },
+      { n: "4", t: "DEPLOY GATE", sub: "per release", c: "#e8590c" }
+    ];
+    const w = 250, h = 150, gap = 40, y = 40;
+    let x = 20; const centers = [];
+    gates.forEach((g, i) => {
+      box(r, svg, x, y, w, h, { stroke: g.c, fill: g.c + "12", fillStyle: "solid", seed: i + 50 });
+      // number circle
+      svg.appendChild(r.circle(x + 40, y + 40, 46, { stroke: g.c, strokeWidth: 2.4, fill: "#fff", fillStyle: "solid", roughness: 1.6, seed: i + 60 }));
+      addText(svg, x + 40, y + 40, g.n, { fill: g.c, size: 30 });
+      addText(svg, x + w / 2, y + 92, g.t, { fill: g.c, size: 26 });
+      addText(svg, x + w / 2, y + 122, g.sub, { size: 20, fill: "#555", weight: 400, font: "'Kalam', cursive" });
+      centers.push(x + w / 2);
+      if (i < gates.length - 1) arrow(r, svg, x + w + 2, y + h / 2, x + w + gap - 4, y + h / 2, { seed: i + 70 });
+      x += w + gap;
+    });
+  },
+
+  feature(svg) {
+    const r = rc(svg);
+    const steps = [
+      { t: "DSL", sub: "new field", c: "#6741d9" },
+      { t: "Compiler", sub: "expand field", c: "#1971c2" },
+      { t: "UI", sub: "user control", c: "#e8590c" },
+      { t: "Tests", sub: "lock behaviour", c: "#2f9e44" },
+      { t: "Release", sub: "4-layer cycle", c: "#e03131" }
+    ];
+    const w = 190, h = 96, gap = 22, y = 70;
+    let x = 15;
+    steps.forEach((s, i) => {
+      box(r, svg, x, y, w, h, { stroke: s.c, fill: s.c + "12", fillStyle: "solid", seed: i + 80 });
+      addText(svg, x + w / 2, y + 36, s.t, { fill: s.c, size: 28 });
+      addText(svg, x + w / 2, y + 66, s.sub, { size: 20, fill: "#555", weight: 400, font: "'Kalam', cursive" });
+      if (i < steps.length - 1) arrow(r, svg, x + w + 2, y + h / 2, x + w + gap + 2, y + h / 2, { seed: i + 90 });
+      x += w + gap;
+    });
+    addText(svg, 560, 40, "additive — extend, don't rewrite", { fill: "#6741d9", size: 26 });
+  }
+};
+
+/* ---------- deck engine ---------- */
+const slides = Array.from(document.querySelectorAll('.slide'));
+let idx = 0;
+const drawn = new Set();
+
+function renderDiagram(slide) {
+  const key = slide.dataset.diagram;
+  if (!key || drawn.has(key) || !drawers[key]) return;
+  const svg = slide.querySelector('svg.diagram');
+  if (!svg) return;
+  if (typeof rough === "undefined") return; // CDN not loaded yet
+  drawers[key](svg);
+  drawn.add(key);
+}
+
+function show(n) {
+  idx = Math.max(0, Math.min(slides.length - 1, n));
+  slides.forEach((s, i) => s.classList.toggle('active', i === idx));
+  renderDiagram(slides[idx]);
+  document.getElementById('counter').textContent = (idx + 1) + ' / ' + slides.length;
+  document.getElementById('progress').style.width = ((idx + 1) / slides.length * 100) + '%';
+}
+
+function next() { show(idx + 1); }
+function prev() { show(idx - 1); }
+
+document.getElementById('next').onclick = next;
+document.getElementById('prev').onclick = prev;
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
+  else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+  else if (e.key === 'Home') show(0);
+  else if (e.key === 'End') show(slides.length - 1);
+  else if (e.key.toLowerCase() === 'f') {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+});
+
+function start() { show(0); }
+if (document.readyState === 'complete') start();
+else window.addEventListener('load', start);
+</script>
+</body>
+</html>

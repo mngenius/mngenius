@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TL;DR — Leveraging AWS Experience on Databricks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Kalam:wght@400;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.min.js"></script>
+<style>
+  :root {
+    --ink: #1e1e1e;
+    --blue: #1971c2;
+    --green: #2f9e44;
+    --red: #e03131;
+    --violet: #6741d9;
+    --orange: #e8590c;
+    --yellow: #f08c00;
+    --teal: #0c8599;
+    --aws: #e8590c;   /* aws orange */
+    --dbx: #e03131;   /* databricks red */
+    --paper: #fdfdf7;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: var(--paper); color: var(--ink);
+    font-family: 'Kalam', 'Comic Sans MS', cursive; overflow: hidden;
+  }
+  body { background-image: radial-gradient(#00000010 1px, transparent 1px); background-size: 26px 26px; }
+  #deck { height: 100vh; width: 100vw; position: relative; }
+  .slide {
+    position: absolute; inset: 0; display: none;
+    flex-direction: column; justify-content: center; align-items: center;
+    padding: 3.5vh 5vw 7vh; opacity: 0; transition: opacity .35s ease;
+  }
+  .slide.active { display: flex; opacity: 1; }
+  h1 {
+    font-family: 'Caveat', cursive; font-weight: 700;
+    font-size: clamp(2.2rem, 5.6vw, 4.6rem); margin: 0 0 .2em;
+    color: var(--ink); text-align: center; line-height: 1.05;
+  }
+  h2 {
+    font-family: 'Caveat', cursive; font-weight: 700;
+    font-size: clamp(1.8rem, 4.2vw, 3rem); margin: 0 0 .45em;
+    color: var(--blue); text-align: center;
+  }
+  .sub { font-size: clamp(.98rem, 2vw, 1.45rem); max-width: 66ch; text-align: center; color: #333; line-height: 1.5; }
+  .hl-blue { color: var(--blue); } .hl-green { color: var(--green); } .hl-red { color: var(--red); }
+  .hl-violet { color: var(--violet); } .hl-orange { color: var(--orange); } .hl-teal { color: var(--teal); }
+  ul.hand { list-style: none; padding: 0; margin: .3em 0 0; font-size: clamp(.95rem, 2vw, 1.45rem); max-width: 72ch; line-height: 1.55; }
+  ul.hand li { margin: .42em 0; padding-left: 1.7em; position: relative; }
+  ul.hand li::before { content: "✦"; position: absolute; left: 0; top: 0; color: var(--violet); font-size: 1.05em; }
+  ul.hand li.q::before { content: "Q"; color: var(--dbx); font-family: 'Caveat', cursive; font-weight: 700; font-size: 1.2em; }
+  ul.hand li.a { padding-left: 1.7em; color:#333; }
+  ul.hand li.a::before { content: "→"; color: var(--green); }
+  svg.diagram { width: min(95vw, 1200px); height: auto; max-height: 62vh; }
+  table.hand { border-collapse: collapse; font-size: clamp(.8rem, 1.55vw, 1.12rem); max-width: 1180px; width: 100%; }
+  table.hand th, table.hand td { padding: .42em .7em; text-align: left; vertical-align: top; border-bottom: 1.5px dashed #ccc; }
+  table.hand th { font-family: 'Caveat', cursive; font-size: 1.45em; border-bottom: 2px solid #999; }
+  table.hand th.aws { color: var(--aws); } table.hand th.dbx { color: var(--dbx); }
+  table.hand tbody tr td:first-child { color: var(--aws); font-weight: 700; }
+  table.hand tbody tr td:nth-child(2) { color: var(--dbx); font-weight: 700; }
+  table.hand tbody tr td:nth-child(3) { color: #555; }
+  .cards { display: flex; gap: clamp(10px, 2vw, 24px); flex-wrap: wrap; justify-content: center; max-width: 1180px; }
+  .card { padding: 1em 1.15em; min-width: 220px; max-width: 270px; font-size: clamp(.9rem, 1.55vw, 1.12rem); line-height: 1.42; }
+  .card h3 { font-family: 'Caveat', cursive; font-size: 1.55em; margin: 0 0 .2em; }
+  .card p { margin: 0; color: #333; }
+  .compare { display: flex; gap: clamp(14px, 3vw, 40px); flex-wrap: wrap; justify-content: center; max-width: 1140px; width: 100%; }
+  .col { flex: 1 1 380px; max-width: 520px; padding: 1.1em 1.3em; }
+  .col h3 { font-family: 'Caveat', cursive; font-size: 1.9em; margin: 0 0 .25em; }
+  .col p { margin: .25em 0; font-size: clamp(.92rem, 1.6vw, 1.15rem); line-height: 1.45; }
+  .eq { font-family: 'Kalam', cursive; font-weight: 700; font-size: 1.1em; background:#fff; border:2px solid; border-radius:10px 8px 11px 7px; padding:.12em .55em; display:inline-block; margin:.25em 0; }
+  code { font-family: 'Kalam', monospace; background:#00000010; padding:.05em .35em; border-radius:5px; font-size:.95em; }
+  #nav { position: fixed; bottom: 14px; right: 18px; display: flex; align-items: center; gap: 10px; z-index: 50; font-family: 'Kalam', cursive; }
+  .nbtn { cursor: pointer; user-select: none; background: #fff; border: 2px solid var(--ink); border-radius: 14px 10px 12px 10px; padding: 4px 14px; font-size: 1.3rem; line-height: 1; box-shadow: 2px 2px 0 #00000022; font-family: 'Caveat', cursive; }
+  .nbtn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 #00000022; }
+  #counter { font-size: 1rem; color: #555; min-width: 60px; text-align: center; }
+  #progress { position: fixed; top: 0; left: 0; height: 5px; background: var(--dbx); width: 0; z-index: 60; transition: width .35s; }
+  .hint { position: fixed; bottom: 16px; left: 18px; font-size: .82rem; color: #999; z-index: 50; }
+  .badge { display: inline-block; font-family: 'Caveat', cursive; font-size: 1.1em; padding: .04em .5em; margin: 0 .1em; border: 2px solid var(--ink); border-radius: 12px 8px 11px 7px; background: #fff; }
+  .tag-aws { color: var(--aws); border-color: var(--aws); }
+  .tag-dbx { color: var(--dbx); border-color: var(--dbx); }
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div id="deck">
+
+  <!-- 1. TITLE -->
+  <section class="slide" data-diagram="title">
+    <h1>From AWS Data Engineering<br/>to the Databricks Lakehouse</h1>
+    <p class="sub" style="margin-top:.5em">
+      Interview cheat-sheet — <b>everything I built on AWS</b> (S3 + Iceberg, Glue,
+      Athena, a JSON pipeline compiler, correct VaR roll-ups) maps <b class="hl-green">directly</b>
+      onto Databricks. It's the <b>same Apache Spark &amp; SQL</b> underneath — different managed skin.
+    </p>
+    <svg class="diagram" id="svg-title" viewBox="0 0 1040 160"></svg>
+    <p class="sub" style="font-size:1rem;color:#888;margin-top:.3em">
+      <span class="badge tag-aws">what I did on AWS</span>
+      <span class="badge tag-dbx">how I'd say it in Databricks</span>
+    </p>
+  </section>
+
+  <!-- 2. ONE MENTAL MODEL -->
+  <section class="slide" data-diagram="model">
+    <h2>The one mental model: the Lakehouse</h2>
+    <svg class="diagram" id="svg-model" viewBox="0 0 1180 300"></svg>
+    <p class="sub" style="margin-top:.2em">
+      <b>Lakehouse = my S3 data lake + a table format + a SQL engine + governance, unified.</b>
+      I already ran this pattern on AWS — Databricks just packages it as one platform.
+    </p>
+  </section>
+
+  <!-- 3. SERVICE MAPPING TABLE -->
+  <section class="slide" data-diagram="map">
+    <h2>Service-by-service mapping</h2>
+    <table class="hand">
+      <thead><tr><th class="aws">AWS — what I used</th><th class="dbx">Databricks equivalent</th><th>Why it's the same skill</th></tr></thead>
+      <tbody>
+        <tr><td>S3 + Iceberg / Parquet</td><td>Delta Lake tables</td><td>ACID table format over object storage; time-travel, schema evolution</td></tr>
+        <tr><td>Glue Data Catalog</td><td>Unity Catalog</td><td>Central metastore + lineage + RBAC; <code>catalog.schema.table</code></td></tr>
+        <tr><td>Athena (serverless SQL)</td><td>Databricks SQL / SQL Warehouses</td><td>Serverless SQL over the lake; Photon = vectorised engine</td></tr>
+        <tr><td>Glue Spark jobs / EMR</td><td>Jobs on Databricks Runtime</td><td>Managed Apache Spark clusters — same DataFrame API</td></tr>
+        <tr><td>Glue Workflows / Step Functions</td><td>Databricks Workflows (Jobs)</td><td>Task DAGs, schedules, triggers, retries</td></tr>
+        <tr><td>My JSON DSL pipeline compiler</td><td>Delta Live Tables (DLT)</td><td>Declarative ETL + data-quality <i>expectations</i></td></tr>
+        <tr><td>S3 events / crawlers</td><td>Auto Loader (<code>cloudFiles</code>)</td><td>Incremental ingest + Structured Streaming</td></tr>
+        <tr><td>IAM roles + Okta SSO</td><td>Unity Catalog grants + SCIM/SSO</td><td>Fine-grained governance, audit-logged</td></tr>
+        <tr><td>GitHub Actions deploy gates</td><td>Databricks Asset Bundles</td><td>IaC / CI-CD promoting dev → staging → prod</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 4. DELTA VS ICEBERG -->
+  <section class="slide" data-diagram="delta">
+    <h2>Delta Lake ≈ the Iceberg I already know</h2>
+    <div class="compare">
+      <div class="col" id="col-know">
+        <h3 class="hl-green">Transfers 1:1</h3>
+        <p>✓ ACID transactions on object storage</p>
+        <p>✓ Time travel — <code>VERSION AS OF</code> (my Iceberg snapshot ids)</p>
+        <p>✓ Schema evolution &amp; enforcement</p>
+        <p>✓ <code>MERGE</code> / upserts, partitioning</p>
+        <p>✓ Metadata-driven pruning &amp; stats</p>
+      </div>
+      <div class="col" id="col-vocab">
+        <h3 class="hl-red">New vocab to name-drop</h3>
+        <p>• <code>_delta_log</code> = the transaction log (≈ Iceberg metadata/manifests)</p>
+        <p>• <code>OPTIMIZE</code> + <code>ZORDER</code> / liquid clustering = compaction &amp; clustering</p>
+        <p>• <code>VACUUM</code> = expire old files (retention)</p>
+        <p>• Medallion: <b>bronze → silver → gold</b></p>
+      </div>
+    </div>
+    <p class="sub" style="margin-top:.5em">
+      Talking point: <i>"I ran Iceberg-on-S3 with snapshot-based time travel and manifest
+      pruning — Delta's <code>_delta_log</code>, <code>OPTIMIZE</code> and time travel are the same ideas."</i>
+    </p>
+  </section>
+
+  <!-- 5. UNITY CATALOG -->
+  <section class="slide" data-diagram="uc">
+    <h2>Governance: Glue Catalog + IAM → Unity Catalog</h2>
+    <ul class="hand">
+      <li>My catalog auto-connected with CDH creds and indexed databases → tables → S3 paths. <b>Unity Catalog</b> does the same as a <b>3-level namespace</b> <code>catalog.schema.table</code>.</li>
+      <li><b class="hl-violet">External locations + storage credentials</b> = the governed S3-access pattern I already used (no ad-hoc keys).</li>
+      <li><b class="hl-green">Grants</b> replace IAM policies for table/column/row access; <b>reads open, writes admin-only, audit-logged</b> — exactly my Views governance model.</li>
+      <li><b class="hl-teal">Built-in lineage + data discovery</b> — what I built manually as a catalog index comes for free.</li>
+      <li><b>Delta Sharing</b> = cross-org sharing without copying (bonus talking point).</li>
+    </ul>
+  </section>
+
+  <!-- 6. COMPUTE -->
+  <section class="slide" data-diagram="compute">
+    <h2>Compute: Glue/EMR → Databricks clusters</h2>
+    <div class="cards" id="compute-cards">
+      <div class="card"><h3 class="hl-orange">Cluster types</h3><p><b>Job clusters</b> (ephemeral, per-run — like Glue jobs) vs <b>all-purpose</b> (interactive notebooks). Autoscaling + spot.</p></div>
+      <div class="card"><h3 class="hl-red">Photon</h3><p>Vectorised C++ engine for SQL/DataFrame. The "fast additive SUM" layer — my Athena reaggregation analog.</p></div>
+      <div class="card"><h3 class="hl-blue">Serverless</h3><p>Serverless SQL warehouses = Athena-like zero-ops query; serverless jobs too.</p></div>
+      <div class="card"><h3 class="hl-violet">DBUs</h3><p>Billing unit = Databricks Units × time × tier. The cost lever I'd tune (right-size clusters, spot, auto-terminate).</p></div>
+    </div>
+    <p class="sub" style="margin-top:.6em">
+      Cost-control instinct transfers: I parked idle Azure VMs on a schedule; here it's
+      <b>auto-terminate, autoscaling and job vs all-purpose choice</b>.
+    </p>
+  </section>
+
+  <!-- 7. ORCHESTRATION / DLT vs my compiler -->
+  <section class="slide" data-diagram="dlt">
+    <h2>My pipeline compiler → Delta Live Tables</h2>
+    <svg class="diagram" id="svg-dlt" viewBox="0 0 1150 250"></svg>
+    <p class="sub" style="margin-top:.3em">
+      I built a <b>declarative JSON DSL</b> that a compiler turned into Spark reads +
+      validated outputs. <b class="hl-red">DLT is the same philosophy</b>: declare tables in SQL/Python,
+      the platform builds the DAG, and <b>expectations</b> are my output-contract checks.
+    </p>
+  </section>
+
+  <!-- 8. ADDITIVE VS NON-ADDITIVE ON DBX -->
+  <section class="slide" data-diagram="additive">
+    <h2 style="color:var(--red)">My killer story: additive vs non-additive VaR</h2>
+    <div class="compare">
+      <div class="col" id="col-add">
+        <h3 class="hl-green">Additive → cheap</h3>
+        <p>Notional, P&amp;L …</p>
+        <span class="eq" style="color:var(--green);border-color:var(--green)">SUM in Databricks SQL / Photon</span>
+        <p>Pre-aggregate into <b>gold</b> Delta tables or SUM on the fly. Instant.</p>
+      </div>
+      <div class="col" id="col-non">
+        <h3 class="hl-red">Non-additive → recompute</h3>
+        <p>VaR / risk vectors …</p>
+        <span class="eq" style="color:var(--red);border-color:var(--red)">VaR(book) ≠ Σ VaR(trades)</span>
+        <p>Re-aggregate risk vectors element-by-element via <b>Spark DataFrame / <code>applyInPandas</code></b> — the heavy job I already tuned.</p>
+      </div>
+    </div>
+    <p class="sub" style="margin-top:.5em">
+      <b>This is the story that sells me:</b> I know <i>why</i> you can't just <code>SUM</code> a
+      VaR, and how to do the correct roll-up on Spark. That's a data-correctness insight most
+      candidates miss — platform-independent.
+    </p>
+  </section>
+
+  <!-- 9. CI/CD -->
+  <section class="slide" data-diagram="cicd">
+    <h2>Release rails: my 4 gates → Databricks Asset Bundles</h2>
+    <svg class="diagram" id="svg-cicd" viewBox="0 0 1150 210"></svg>
+    <p class="sub" style="margin-top:.3em">
+      My <span class="badge tag-aws">draft → validated → live</span> + 4 gates becomes
+      <b class="hl-red">DABs</b> (YAML-defined jobs/DLT/notebooks) promoted through
+      <b>dev → staging → prod</b> workspaces, gated by CI + approvals. Same discipline, native tooling.
+    </p>
+  </section>
+
+  <!-- 10. HANDLE THE GAP -->
+  <section class="slide" data-diagram="gap">
+    <h2>How to answer "you haven't used Databricks"</h2>
+    <ul class="hand">
+      <li class="q">"Have you used Databricks in production?"</li>
+      <li class="a"><i>"Not the managed platform, but I built the same lakehouse pattern on AWS — Iceberg-on-S3, Glue/Athena, a Spark compiler. It's the same Apache Spark and SQL; the concepts transfer directly."</i></li>
+      <li class="q">"How would you migrate our pipelines?"</li>
+      <li class="a"><i>"Delta tables for Iceberg, Unity Catalog for Glue Catalog + IAM, DLT/Workflows for my Glue jobs, Asset Bundles for CI/CD. I'd keep the medallion layering and the additive/non-additive split."</i></li>
+      <li class="q">"What's hard about VaR at scale?"</li>
+      <li class="a"><i>"Non-additive roll-ups: you must recompute from risk vectors, not sum. On Databricks that's a Spark job — the exact optimisation work I've done."</i></li>
+    </ul>
+  </section>
+
+  <!-- 11. VOCAB / GOTCHAS -->
+  <section class="slide" data-diagram="vocab">
+    <h2>Vocab to drop fluently</h2>
+    <div class="cards">
+      <div class="card"><h3 class="hl-blue">Storage</h3><p>Delta, <code>_delta_log</code>, time travel, <code>MERGE</code>, <code>OPTIMIZE</code>, <code>ZORDER</code>, liquid clustering, <code>VACUUM</code></p></div>
+      <div class="card"><h3 class="hl-green">Ingest / ETL</h3><p>Auto Loader (<code>cloudFiles</code>), Structured Streaming, DLT, expectations, medallion</p></div>
+      <div class="card"><h3 class="hl-violet">Govern</h3><p>Unity Catalog, 3-level namespace, external locations, grants, lineage, Delta Sharing</p></div>
+      <div class="card"><h3 class="hl-orange">Compute / ops</h3><p>DBR, Photon, job vs all-purpose clusters, serverless, DBUs, auto-terminate, Asset Bundles, MLflow</p></div>
+    </div>
+    <p class="sub" style="margin-top:.6em">
+      Honest framing wins: <b>"concepts I've done on AWS, platform I'm ramping on"</b> — never fake hands-on prod Databricks.
+    </p>
+  </section>
+
+  <!-- 12. SUMMARY -->
+  <section class="slide" data-diagram="summary">
+    <h1 style="color:var(--dbx)">One-slide summary</h1>
+    <ul class="hand" style="max-width:78ch">
+      <li><b class="hl-green">Same engine:</b> Databricks is managed Apache Spark + Delta + SQL — everything I did on Glue/Athena/EMR transfers.</li>
+      <li><b class="hl-blue">Clean mapping:</b> Iceberg→Delta, Glue Catalog→Unity Catalog, Athena→Databricks SQL, Glue jobs→Workflows/DLT, CI gates→Asset Bundles.</li>
+      <li><b class="hl-red">My differentiator:</b> correct additive vs non-additive VaR roll-ups — a data-correctness insight, not a tool.</li>
+      <li><b class="hl-violet">Governance &amp; release discipline</b> (draft→live, audit, approvals) map straight onto Unity Catalog + DABs.</li>
+      <li><b class="hl-orange">Net:</b> I'm not learning data engineering — I'm learning one platform's buttons for patterns I've already shipped.</li>
+    </ul>
+  </section>
+
+</div>
+
+<div id="nav">
+  <span class="nbtn" id="prev">‹ prev</span>
+  <span id="counter">1 / 12</span>
+  <span class="nbtn" id="next">next ›</span>
+</div>
+<div class="hint">← → / Space to navigate · F for fullscreen</div>
+
+<script>
+const SVGNS = "http://www.w3.org/2000/svg";
+function rc(svg) { return rough.svg(svg); }
+function addText(svg, x, y, str, opts = {}) {
+  const t = document.createElementNS(SVGNS, "text");
+  t.setAttribute("x", x); t.setAttribute("y", y);
+  t.setAttribute("text-anchor", opts.anchor || "middle");
+  t.setAttribute("dominant-baseline", opts.baseline || "middle");
+  t.setAttribute("font-family", opts.font || "'Caveat', cursive");
+  t.setAttribute("font-size", opts.size || 26);
+  t.setAttribute("font-weight", opts.weight || 700);
+  t.setAttribute("fill", opts.fill || "#1e1e1e");
+  t.textContent = str; svg.appendChild(t); return t;
+}
+function box(r, svg, x, y, w, h, opts = {}) {
+  svg.appendChild(r.rectangle(x, y, w, h, {
+    stroke: opts.stroke || "#1e1e1e", strokeWidth: opts.strokeWidth || 2.2,
+    roughness: opts.roughness ?? 1.6, fill: opts.fill || undefined,
+    fillStyle: opts.fillStyle || "hachure", fillWeight: opts.fillWeight || 1.5,
+    hachureGap: opts.hachureGap || 7, bowing: 1.4, seed: opts.seed || 1
+  }));
+}
+function arrow(r, svg, x1, y1, x2, y2, opts = {}) {
+  const stroke = opts.stroke || "#495057"; const sw = opts.strokeWidth || 2.4;
+  svg.appendChild(r.line(x1, y1, x2, y2, { stroke, strokeWidth: sw, roughness: 1.5, seed: opts.seed || 2 }));
+  const ang = Math.atan2(y2 - y1, x2 - x1); const L = opts.head || 13;
+  const a1 = ang + Math.PI - 0.42, a2 = ang + Math.PI + 0.42;
+  svg.appendChild(r.line(x2, y2, x2 + L * Math.cos(a1), y2 + L * Math.sin(a1), { stroke, strokeWidth: sw, roughness: 1.2, seed: 3 }));
+  svg.appendChild(r.line(x2, y2, x2 + L * Math.cos(a2), y2 + L * Math.sin(a2), { stroke, strokeWidth: sw, roughness: 1.2, seed: 4 }));
+}
+
+const drawers = {
+  title(svg) {
+    const r = rc(svg);
+    const stages = [
+      { t: "AWS: Glue · Athena · S3", c: "#e8590c" },
+      { t: "same Spark & SQL", c: "#6741d9" },
+      { t: "Databricks Lakehouse", c: "#e03131" }
+    ];
+    let x = 40; const w = 300, gap = 40;
+    stages.forEach((s, i) => {
+      box(r, svg, x, 45, w, 66, { stroke: s.c, fill: s.c + "16", fillStyle: "solid", seed: i + 5 });
+      addText(svg, x + w / 2, 78, s.t, { fill: s.c, size: 24 });
+      if (i < stages.length - 1) arrow(r, svg, x + w + 2, 78, x + w + gap - 2, 78, { seed: i + 9 });
+      x += w + gap;
+    });
+  },
+
+  model(svg) {
+    const r = rc(svg);
+    // stacked lakehouse layers
+    const layers = [
+      { t: "Governance — Unity Catalog", sub: "was: Glue Catalog + IAM/Okta", c: "#6741d9" },
+      { t: "Query & BI — Databricks SQL / Photon", sub: "was: Athena", c: "#1971c2" },
+      { t: "Compute & ETL — Jobs · DLT · Spark", sub: "was: Glue jobs / EMR / my compiler", c: "#2f9e44" },
+      { t: "Table format — Delta Lake", sub: "was: Iceberg / Parquet", c: "#e8590c" },
+      { t: "Storage — S3 / ADLS object store", sub: "was: S3", c: "#868e96" }
+    ];
+    const w = 760, h = 46, x = 210; let y = 20;
+    layers.forEach((L, i) => {
+      box(r, svg, x, y, w, h, { stroke: L.c, fill: L.c + "14", fillStyle: "solid", seed: i + 11 });
+      addText(svg, x + 20, y + h / 2, L.t, { anchor: "start", fill: L.c, size: 25 });
+      addText(svg, x + w - 20, y + h / 2, L.sub, { anchor: "end", size: 18, fill: "#888", weight: 400, font: "'Kalam', cursive" });
+      y += h + 10;
+    });
+    addText(svg, 100, 150, "one", { fill: "#e03131", size: 30 });
+    addText(svg, 100, 180, "platform", { fill: "#e03131", size: 30 });
+  },
+
+  dlt(svg) {
+    const r = rc(svg);
+    const steps = [
+      { t: "Declare tables", sub: "SQL / Python", c: "#e8590c" },
+      { t: "DLT builds DAG", sub: "auto dependencies", c: "#1971c2" },
+      { t: "Expectations", sub: "data-quality gates", c: "#6741d9" },
+      { t: "Materialize", sub: "bronze→silver→gold", c: "#2f9e44" }
+    ];
+    const w = 240, h = 110, gap = 40, y = 60; let x = 30;
+    steps.forEach((s, i) => {
+      box(r, svg, x, y, w, h, { stroke: s.c, fill: s.c + "12", fillStyle: "solid", seed: i + 20 });
+      addText(svg, x + w / 2, y + 42, s.t, { fill: s.c, size: 27 });
+      addText(svg, x + w / 2, y + 76, s.sub, { size: 20, fill: "#555", weight: 400, font: "'Kalam', cursive" });
+      if (i < steps.length - 1) arrow(r, svg, x + w + 2, y + h / 2, x + w + gap - 2, y + h / 2, { seed: i + 30 });
+      x += w + gap;
+    });
+    addText(svg, 575, 30, "= my declarative JSON compiler, native", { fill: "#6741d9", size: 24 });
+  },
+
+  cicd(svg) {
+    const r = rc(svg);
+    const envs = [
+      { t: "dev", sub: "notebooks / draft", c: "#e8590c" },
+      { t: "staging", sub: "CI tests + validate", c: "#1971c2" },
+      { t: "prod", sub: "approval-gated", c: "#2f9e44" }
+    ];
+    const w = 260, h = 100, gap = 90, y = 55; let x = 60; const cy = [];
+    envs.forEach((s, i) => {
+      box(r, svg, x, y, w, h, { stroke: s.c, fill: s.c + "14", fillStyle: "solid", seed: i + 40 });
+      addText(svg, x + w / 2, y + 40, s.t, { fill: s.c, size: 32 });
+      addText(svg, x + w / 2, y + 74, s.sub, { size: 20, fill: "#555", weight: 400, font: "'Kalam', cursive" });
+      cy.push(x + w / 2);
+      if (i < envs.length - 1) { arrow(r, svg, x + w + 2, y + h / 2, x + w + gap - 2, y + h / 2, { seed: i + 50 }); addText(svg, x + w + gap / 2, y + h / 2 - 16, "bundle deploy", { size: 18, fill: "#e03131", weight: 400, font: "'Kalam', cursive" }); }
+      x += w + gap;
+    });
+  }
+};
+
+const slides = Array.from(document.querySelectorAll('.slide'));
+let idx = 0; const drawn = new Set();
+function renderDiagram(slide) {
+  const key = slide.dataset.diagram;
+  if (!key || drawn.has(key) || !drawers[key]) return;
+  const svg = slide.querySelector('svg.diagram');
+  if (!svg || typeof rough === "undefined") return;
+  drawers[key](svg); drawn.add(key);
+}
+function show(n) {
+  idx = Math.max(0, Math.min(slides.length - 1, n));
+  slides.forEach((s, i) => s.classList.toggle('active', i === idx));
+  renderDiagram(slides[idx]);
+  document.getElementById('counter').textContent = (idx + 1) + ' / ' + slides.length;
+  document.getElementById('progress').style.width = ((idx + 1) / slides.length * 100) + '%';
+}
+function next() { show(idx + 1); } function prev() { show(idx - 1); }
+document.getElementById('next').onclick = next;
+document.getElementById('prev').onclick = prev;
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
+  else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+  else if (e.key === 'Home') show(0);
+  else if (e.key === 'End') show(slides.length - 1);
+  else if (e.key.toLowerCase() === 'f') { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+});
+function start() { show(0); }
+if (document.readyState === 'complete') start(); else window.addEventListener('load', start);
+</script>
+</body>
+</html>
