@@ -8,17 +8,19 @@ Certification
 - 2025 — Azure Databricks Fundamentals Certified
 
 Profile
-Data engineering and platform leader with 16 years of overall experience, including 11 years in trading environments across capital markets and energy commodities. I deliver AWS, Databricks and PySpark data platforms end to end, combining run ownership, automation and close collaboration with business and technical stakeholders.
+Data engineering and platform leader with 16 years of overall experience, including 11 years across capital-markets and energy-trading environments. I design and run AWS, Databricks and PySpark data platforms end to end — from business-facing modelling and governed data products to run support, incident automation and industrialised delivery.
 
 Contact & focus
 - GitHub: github.com/mngenius
-- Focus: AWS, Azure, Spark, Java, Python
+- Focus: Energy trading, AWS, Databricks, Spark, Java, Python
+- Strengths: Run ownership, stakeholder communication, automation
 
 Technical Skills
 - Main skills: Apache Spark, PySpark, Databricks, AWS, Azure, Kubernetes, Python, Java, Kafka.
 - Data & lakehouse: Apache Spark, PySpark, Iceberg, Parquet, Athena, Glue, Databricks, Delta Lake, SQL.
-- Cloud & platform: AWS, Azure, Kubernetes, AKS, Docker, Terraform, GitHub Actions.
+- Cloud & platform: AWS, Azure, Kubernetes, AKS, Docker, Terraform, Splunk, GitHub Actions.
 - Backend & delivery: Java, Spring Boot, Python, Scala, Kafka, Event Hubs, PostgreSQL, CI/CD.
+- Markets & risk domain: Energy trading, commodities, market risk, counterparty risk, VaR, Greeks, Explain, PnL, FRTB, trade capture, position management.
 
 Languages
 - French — Native
@@ -27,94 +29,108 @@ Languages
 
 Experiences
 
-09.2025 – Present
+09.2026 – Present
 ENGIE Global Markets
 Data Lead / Cloud Data Lead
 Energy trading risk platform migration to AWS
-- Led migration of legacy production risk and PnL indicators from OLAP and CSV-based flows to an AWS-native platform within an energy trading environment.
-- Designed S3, Lambda, Glue, Databricks and EventBridge patterns for event-driven ingestion, PySpark processing, monitoring and operational support.
-- Built a no-code platform that serialises business designs to JSON and executes them on Spark and Spark SQL, reducing manual interventions and accelerating onboarding.
-- Partnered with business and technical teams, handled run incidents and improved end-to-end tracking across AWS and Azure components through automation.
-- Technologies: AWS, S3, Lambda, Glue, Databricks, EventBridge, PySpark, Spark SQL, Azure.
+- Context: migration of legacy VaR, Greeks, CFFO, Explain and PnL production flows from Atoti/CSV processes to an AWS-native data platform.
+- Designed and delivered an event-driven AWS architecture with S3 events, Lambda dispatch, Glue/Spark processing and Splunk-based observability.
+- Built a no-code platform for business analysts and users: drag-and-drop design translated into Spark or Spark SQL, serialised as JSON and executed industrially through Lambda/Glue.
+- Implemented hierarchy tracking, end-to-end monitoring and cross-cloud communication between AWS and Azure components to improve run support and traceability.
+- Migrated calculated and post-processed data from Atoti/ActiveViam and ad-hoc treatments to the new AWS target platform.
+- Technologies: AWS (S3, Lambda, Glue, EventBridge), Databricks, PySpark, Spark SQL, Splunk, Azure File Storage, Atoti/ActiveViam, Python, Java, JSON, CI/CD.
 
-10.2022 – 12.2025
+10.2022 – 03.2026
 Société Générale Corporate & Investment Banking
 Lead Developer / Data Platform Lead
-Fraud-control and analytics pipeline platform
-- Built a Spark and PySpark ETL and execution framework for anti-fraud control designs and operational analytics.
-- Developed an interpretation engine converting JSON directives into executable Spark logic.
-- Implemented job execution, monitoring, incident diagnosis and automated recovery services around Spark workloads.
-- Owned orchestration, cloud infrastructure, health monitoring and complex Spark SQL control scenarios with a strong focus on support and industrialisation.
-- Technologies: Spark, PySpark, JSON, Spark SQL.
+Fraud-control and analytics pipeline platform for trading operations
+- Context: FOX manages anti-fraud controls for trading transactions; scope covered both control-design modelling and execution.
+- Built a Spark/PySpark ETL and execution framework that translated JSON control directives into executable Spark logic.
+- Developed a microservice layer for Spark job execution, monitoring, updates and operational follow-up.
+- Implemented Airflow orchestration, Spark SQL control scenarios, and health monitoring for the orchestration stack with Grafana.
+- Modelled and maintained the cloud runtime across Kubernetes and big-data components with a strong focus on support and industrialisation.
+- Technologies: Apache Spark/Hadoop, PySpark, Azure Event Hub, Airflow, Livy, Python, SQL, Java 21, Scala, Hive, Azure, Kubernetes, Spring Boot, Microservices, Jenkins, Grafana, CI/CD.
 
 10.2021 – 10.2022
 Natixis Corporate & Investment Banking
 Consultant, Java / Big Data
-- Contributed to counterparty risk architecture modernisation with microservices and CI/CD standards.
-- Implemented distributed cache and publisher-consumer patterns to improve risk-calculation performance.
-- Built shared Jenkins pipeline libraries to standardise delivery workflows across teams.
-- Technologies: Java, Microservices, CI/CD, Jenkins.
+Counterparty-risk R&D architecture and delivery enablement
+- Context: counterparty-risk R&D team defining microservice architecture, engineering standards and CI/CD pipelines.
+- Implemented a level-2 distributed cache with Chronicle Map and gRPC / Protocol Buffers to accelerate risk-calculation tasks.
+- Built publisher-consumer patterns with Chronicle Queues and delivered a shared Jenkins library encapsulating CI/CD logic.
+- Technologies: Java 11, Spring Boot, Microservices, Chronicle Map, Chronicle Queue, gRPC, Protocol Buffers, Jenkins, REST, Groovy, CI/CD, Git, Maven, Linux, JUnit, Mockito.
 
 06.2018 – 10.2021
 Société Générale Corporate & Investment Banking
 Senior Java / Big Data Developer
-- Delivered big-data execution frameworks for FRTB default-risk metrics on Azure-based platforms.
-- Designed Kafka-driven messaging and result distribution toward downstream OLAP consumers.
-- Migrated data projects from on-premises data lake stacks to Azure and maintained production services.
-- Technologies: Java, Big Data, Azure, Kafka, OLAP.
+FRTB default-risk metrics and Azure big-data delivery
+- Context: Fundamental Review of the Trading Book default-risk scope on a big-data platform requiring close coordination with business stakeholders and application teams.
+- Designed Kafka-driven execution flows for FRTB default-risk calculations and published results to downstream OLAP consumers through Kafka and HTTP streaming.
+- Implemented DRC standard-method rules across Equity LGD and Credit quality grids, then delivered production releases using pricer data.
+- Migrated projects from on-premises data lake stacks to Azure, including technical adaptations, plugins and production maintenance.
+- Technologies: Apache Spark, Hadoop, Kafka, Java 8, Scala, Hive, Data Lake, Azure, ActiveViam, Spring Boot, Microservices, Jenkins, REST, Git, Gradle, Linux, JUnit, Mockito.
 
 01.2017 – 05.2018
 HSBC Global Markets
 Consultant, Distributed Systems
-- Led development for fixed-income functionality within a cross-asset risk and PnL platform.
-- Coordinated offshore teams and built shared cache, workflow and REST service capabilities.
-- Supported CI/CD and performance optimisation across distributed compute grids.
-- Technologies: REST, CI/CD.
+Cross-asset market-risk and PnL platform
+- Context: cross-asset platform covering market-risk and PnL calculations across asset classes, with fixed-income delivery ownership.
+- Acted as point of contact for fixed-income development and support, leading offshore teams across Guangzhou, Bucharest and Pune.
+- Built on-demand trade loading with Coherence shared cache, optimised workflows and memory usage in distributed DataSynapse grids, and delivered REST microservices plus lifecycle tooling.
+- Supported CI/CD with TeamCity, Jenkins and Ansible.
+- Technologies: Java 8, DataSynapse, Coherence, Spring, Akka, Microservices, TeamCity, Jenkins, Ansible, REST, Git, Gradle, Maven, JUnit, Mockito.
 
 04.2014 – 01.2017
 Société Générale Corporate & Investment Banking
 Java Core / SQL Developer
-- Built low-latency trade capture and position-management components for synthetic prime brokerage workflows.
-- Delivered re-rating and historical replay APIs, BDD test suites and high-touch production support.
-- Technologies: Java Core, SQL, APIs, BDD.
+Synthetic Prime Brokerage trade-capture and lifecycle platform
+- Context: Dynamic Portfolio Swap workflow spanning trade capture, valuation, payments, accounting and client reporting.
+- Built low-latency Java components for trade capture, position management and cashflow valuation using java.util.concurrent and blocking-queue patterns.
+- Delivered a re-rating API with 45-day history replay and prepared BDD test suites with Cucumber.
+- Provided high-touch production support and troubleshooting with end users and global support teams.
+- Technologies: Java 8, Oracle 11g, Cucumber, Ehcache, Apache CXF, REST, Jersey, Swing, Spring 3 / Boot, Hibernate JPA, Git, Maven 3, Jenkins, Nexus, Sonar.
 
 01.2012 – 04.2014
 PMC Carrus Group
 Java / JEE Developer
-- Developed alerting and integration services for real-time betting transaction systems.
-- Implemented messaging, server-push and database procedures, and coached junior developers.
-- Technologies: Java, JEE.
+Real-time betting transaction systems and alerting services
+- Context: real-time horse-betting transaction systems with alerting, integration and operational supervision needs.
+- Built alerting and integration services with message-driven EJBs and Java CCI to exchange with heterogeneous information-system components.
+- Implemented server-push synchronisation for the UI, stored procedures and shell scripting, and configured Apache HTTP / JBoss SOA environments.
+- Mentored three junior developers.
+- Technologies: Java / JEE, JSP, Servlet, EJB 3, JCA, JBoss, ZK, Sybase, T-SQL, XML, Shell, Maven, SVN, Jenkins, Windows, Linux.
 
 07.2010 – 12.2011
 VINCI / Cofiroute
 Java Consultant
-- Built file-conversion and supervision applications using Java, Spring Batch, XML and Oracle.
-- Technologies: Java, Spring Batch, XML, Oracle.
+Automated tolling data conversion and fraud-supervision tooling
+- Context: automated tolling and fraud-supervision systems for Cofiroute.
+- Built flat-file to XML conversion workflows with Spring Batch and JAXB plus a web supervision application using JSP and Ext JS.
+- Technologies: Oracle 11g, Java / JEE, Spring MVC / Batch / Security, Hibernate, SQL / PL-SQL, XML / XSD, JavaScript, Ext JS, Tomcat, SVN.
 
 Selected impact
 
-No-code risk pipeline platform with safe promotion rails
-- Designed a JSON-driven pipeline model that lets analysts and business teams define processing logic while the platform compiles it into Spark and Spark SQL execution.
-- Wrapped it in a controlled lifecycle with draft, validated and live states, immutable versions, automated validation gates and approval-based promotion to production.
+No-code platform for business-controlled risk processing
+- Designed a JSON-driven platform that lets business analysts and delivery teams model processing logic through guided flows while the runtime compiles it into Spark and Spark SQL execution with controlled promotion to production.
 
-Governed business screens over raw S3 and risk data
-- Built the path from catalogued raw data to business-facing screens: automatic data catalog indexing, admin-configured views, drill-down and drill-through navigation, per-scenario analysis, and correct re-aggregation logic for additive and non-additive measures such as VaR.
+Governed business views over raw risk data
+- Built the path from catalogued raw data to business-facing screens: automatic data catalog indexing, admin-configured views, drill-down and drill-through navigation, scenario analysis, and correct re-aggregation logic for additive and non-additive measures such as VaR.
 
-Cross-cloud event-driven migration of production risk workloads
+Cross-cloud migration of energy and market-risk workloads
 - Replaced file-watching integrations with AWS event-driven components using S3, Lambda, Glue and EventBridge, while bridging AWS and Azure workloads and preserving traceability, monitoring and delivery control across the migration path.
 
-Lakehouse patterns that transfer cleanly to Databricks
-- Applied Spark, Iceberg, Athena and governance patterns that map directly to Delta Lake, Unity Catalog, Databricks SQL and Delta Live Tables, with particular depth in data correctness, release discipline and performance-aware risk aggregation.
+Lakehouse patterns ready for Databricks scale-out
+- Applied Spark, Iceberg, Athena and governance patterns that transfer directly to Delta Lake, Unity Catalog, Databricks SQL and Delta Live Tables, with particular depth in data correctness, release discipline and performance-aware risk aggregation.
 
-Platform engineering that keeps delivery boring
-- Built reusable CI/CD assets, Kubernetes-based runtime foundations, passwordless cloud authentication patterns, and cost-control automation aimed at making data and platform systems reproducible, secure and inexpensive when idle.
+Operational ownership: support, automation and industrialisation
+- Built reusable CI/CD assets, observability patterns, passwordless cloud authentication flows and cost-control automation aimed at reducing manual interventions and keeping production data platforms reliable and inexpensive when idle.
 
 Key themes across the portfolio
-- Risk data products with auditability and release control
-- Serverless and Spark-based data processing on AWS
-- Catalog, discovery and governed access to data assets
-- Interactive drill and aggregation paths for business users
-- Correct treatment of non-additive metrics such as VaR
-- Reusable developer platforms and CI/CD templates
-- Hybrid and cross-cloud operating models
-- Cost-aware runtime design and scale-to-zero instincts
+- Risk and trading data products with auditability and release control
+- Event-driven and Spark-based data processing on AWS and Databricks
+- Catalog, discovery and governed access to risk and business data assets
+- Interactive drill, explain and aggregation paths for business users
+- Correct treatment of non-additive metrics such as VaR and PnL explains
+- Reusable developer platforms, CI/CD templates and delivery guardrails
+- Hybrid and cross-cloud operating models across AWS and Azure
+- Support, observability and automation for critical production workflows
