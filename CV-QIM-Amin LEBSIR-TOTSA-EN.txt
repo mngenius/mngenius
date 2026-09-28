@@ -8,7 +8,7 @@ Certification
 - 2025 — Azure Databricks Fundamentals Certified
 
 Profile
-Data engineering and platform leader with 17 years of overall experience, including 11 years in trading environments across capital markets and energy commodities. I deliver AWS, Databricks and PySpark data platforms end to end, combining run ownership, automation and close collaboration with business and technical stakeholders.
+Data engineering and platform leader with 16 years of overall experience, including 11 years in trading environments across capital markets and energy commodities. I deliver AWS, Databricks and PySpark data platforms end to end, combining run ownership, automation and close collaboration with business and technical stakeholders.
 
 Technical Skills
 - Main skills: Apache Spark, PySpark, Databricks, AWS, Azure, Kubernetes, Python, Java, Kafka.
