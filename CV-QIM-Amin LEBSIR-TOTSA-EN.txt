@@ -10,6 +10,10 @@ Certification
 Profile
 Data engineering and platform leader with 16 years of overall experience, including 11 years in trading environments across capital markets and energy commodities. I deliver AWS, Databricks and PySpark data platforms end to end, combining run ownership, automation and close collaboration with business and technical stakeholders.
 
+Contact & focus
+- GitHub: github.com/mngenius
+- Focus: AWS, Azure, Spark, Java, Python
+
 Technical Skills
 - Main skills: Apache Spark, PySpark, Databricks, AWS, Azure, Kubernetes, Python, Java, Kafka.
 - Data & lakehouse: Apache Spark, PySpark, Iceberg, Parquet, Athena, Glue, Databricks, Delta Lake, SQL.
@@ -86,3 +90,31 @@ VINCI / Cofiroute
 Java Consultant
 - Built file-conversion and supervision applications using Java, Spring Batch, XML and Oracle.
 - Technologies: Java, Spring Batch, XML, Oracle.
+
+Selected impact
+
+No-code risk pipeline platform with safe promotion rails
+- Designed a JSON-driven pipeline model that lets analysts and business teams define processing logic while the platform compiles it into Spark and Spark SQL execution.
+- Wrapped it in a controlled lifecycle with draft, validated and live states, immutable versions, automated validation gates and approval-based promotion to production.
+
+Governed business screens over raw S3 and risk data
+- Built the path from catalogued raw data to business-facing screens: automatic data catalog indexing, admin-configured views, drill-down and drill-through navigation, per-scenario analysis, and correct re-aggregation logic for additive and non-additive measures such as VaR.
+
+Cross-cloud event-driven migration of production risk workloads
+- Replaced file-watching integrations with AWS event-driven components using S3, Lambda, Glue and EventBridge, while bridging AWS and Azure workloads and preserving traceability, monitoring and delivery control across the migration path.
+
+Lakehouse patterns that transfer cleanly to Databricks
+- Applied Spark, Iceberg, Athena and governance patterns that map directly to Delta Lake, Unity Catalog, Databricks SQL and Delta Live Tables, with particular depth in data correctness, release discipline and performance-aware risk aggregation.
+
+Platform engineering that keeps delivery boring
+- Built reusable CI/CD assets, Kubernetes-based runtime foundations, passwordless cloud authentication patterns, and cost-control automation aimed at making data and platform systems reproducible, secure and inexpensive when idle.
+
+Key themes across the portfolio
+- Risk data products with auditability and release control
+- Serverless and Spark-based data processing on AWS
+- Catalog, discovery and governed access to data assets
+- Interactive drill and aggregation paths for business users
+- Correct treatment of non-additive metrics such as VaR
+- Reusable developer platforms and CI/CD templates
+- Hybrid and cross-cloud operating models
+- Cost-aware runtime design and scale-to-zero instincts
