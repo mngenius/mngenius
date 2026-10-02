@@ -1,0 +1,88 @@
+Amin LEBSIR
+Data Lead | Cloud Data Lead | Data Platform Architect
+
+Education
+- 2009 — Master 2 in Computer Science, Université d'Évry
+
+Certification
+- 2025 — Azure Databricks Fundamentals Certified
+
+Profile
+Data engineering and platform leader with 16 years of overall experience, including 11 years across capital markets and energy trading environments. I deliver AWS, Databricks and PySpark data platforms end to end, combining business understanding, run ownership, automation and industrialised delivery.
+
+Technical Skills
+- Main skills: Apache Spark, PySpark, Databricks, AWS, Azure, Kubernetes, Python, Java, Kafka.
+- Data & lakehouse: Apache Spark, PySpark, Iceberg, Parquet, Athena, Glue, Databricks, Delta Lake, SQL, Atoti / ActiveViam.
+- Cloud & platform: AWS, Azure, Kubernetes, AKS, Docker, Terraform, EventBridge, Splunk, GitHub Actions.
+- Backend & delivery: Java, Spring Boot, Python, Scala, Kafka, Event Hubs, PostgreSQL, CI/CD, Airflow.
+
+Languages
+- French — Native
+- English — Fluent
+- Spanish — Fluent
+
+Experiences
+
+09.2026 – Present
+ENGIE Global Markets
+Data Lead / Cloud Data Lead
+Energy trading risk platform migration to AWS
+- Led the migration of VaR, Greeks, CFFO, Explain and PnL workflows from Atoti / CSV-based legacy processes to an AWS-native data platform.
+- Designed an event-driven AWS architecture with S3, Lambda, Glue and EventBridge for ingestion, processing, monitoring and production support.
+- Built a no-code platform for business analysts that serialises designs to JSON and executes them through Spark / Spark SQL and Lambda / Glue runtimes.
+- Implemented hierarchy tracking, end-to-end monitoring and AWS / Azure cross-cloud communication to improve traceability, automation and incident handling.
+- Technologies : AWS (S3, Lambda, Glue, EventBridge), Databricks, PySpark, Spark SQL, Splunk, Azure File Storage, Atoti / ActiveViam, Python, Java, JSON, CI/CD.
+
+10.2022 – 03.2026
+Société Générale Corporate & Investment Banking
+Lead Developer / Data Platform Lead
+Fraud-control and analytics pipeline platform for trading operations
+- Built a Spark / PySpark ETL framework and interpretation engine that converts JSON control directives into executable Spark logic.
+- Developed services for job execution, monitoring, updates and operational follow-up around Spark workloads.
+- Implemented Airflow orchestration, Spark SQL control scenarios and observability for the orchestration stack.
+- Modelled and maintained the cloud runtime across Kubernetes and big-data components with a strong focus on support and industrialisation.
+- Technologies : Apache Spark / Hadoop, PySpark, Azure Event Hub, Airflow, Livy, Python, SQL, Java 21, Scala, Hive, Azure, Kubernetes, Spring Boot, Microservices, Jenkins, Grafana.
+
+10.2021 – 10.2022
+Natixis Corporate & Investment Banking
+Consultant, Java / Big Data
+Counterparty-risk R&D architecture and CI/CD enablement.
+- Implemented a level-2 distributed cache with Chronicle Map and gRPC / Protocol Buffers to accelerate risk-calculation tasks.
+- Built publisher-consumer patterns with Chronicle Queues and delivered a shared Jenkins library encapsulating CI/CD logic.
+- Technologies : Java 11, Spring Boot, Microservices, Chronicle Map, Chronicle Queue, gRPC, Protocol Buffers, Jenkins, REST, Groovy, CI/CD, Git, Maven, Linux.
+
+06.2018 – 10.2021
+Société Générale Corporate & Investment Banking
+Senior Java / Big Data Developer
+FRTB default-risk metrics and Azure big-data delivery.
+- Designed Kafka-driven execution and distribution flows for FRTB default-risk calculations toward downstream OLAP consumers.
+- Migrated projects from on-premises data lake stacks to Azure, including technical adaptations, plugins and production maintenance.
+- Technologies : Apache Spark, Hadoop, Kafka, Java 8, Scala, Hive, Data Lake, Azure, ActiveViam, Spring Boot, Microservices, Jenkins, REST, Git, Gradle.
+
+01.2017 – 05.2018
+HSBC Global Markets
+Consultant, Distributed Systems
+Cross-asset market-risk and PnL platform with fixed-income ownership.
+- Led offshore delivery and built shared cache, workflow and REST service capabilities for fixed-income functionality.
+- Supported CI/CD, workflow optimisation and memory analysis across distributed compute grids.
+- Technologies : Java 8, DataSynapse, Coherence, Spring, Akka, Microservices, TeamCity, Jenkins, Ansible, REST, Git, Gradle, Maven.
+
+04.2014 – 01.2017
+Société Générale Corporate & Investment Banking
+Java Core / SQL Developer
+Synthetic Prime Brokerage trade-capture and lifecycle platform.
+- Built low-latency trade capture, position-management and cashflow components, then delivered re-rating and 45-day history replay APIs.
+- Technologies : Java 8, Oracle 11g, Cucumber, Ehcache, Apache CXF, REST, Jersey, Swing, Spring, Hibernate JPA, Git, Maven 3, Jenkins.
+
+01.2012 – 04.2014
+PMC Carrus Group
+Java / JEE Developer
+Real-time betting transaction systems and alerting services.
+- Built alerting and integration services with message-driven EJBs, Java CCI, server-push synchronisation and operational shell / SQL tooling.
+- Technologies : Java / JEE, JSP, Servlet, EJB 3, JCA, JBoss, ZK, Sybase, T-SQL, XML, Shell, Maven, SVN, Jenkins, Windows, Linux.
+
+07.2010 – 12.2011
+VINCI / Cofiroute
+Java Consultant
+Automated tolling data conversion and fraud-supervision tooling.
+- Technologies : Oracle 11g, Java / JEE, Spring MVC / Batch / Security, Hibernate, SQL / PL-SQL, XML / XSD, JavaScript, Ext JS, Tomcat, SVN.
